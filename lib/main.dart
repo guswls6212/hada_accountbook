@@ -86,7 +86,7 @@ class _MyHomePageState extends State<MyHomePage> {
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
-      body: Column(
+      body: const Column(
         children: [
           MyCustomForm(),
         ],
@@ -95,17 +95,28 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-class MyCustomForm extends StatelessWidget {
+class MyCustomForm extends StatefulWidget {
   const MyCustomForm({super.key});
 
   @override
+  State<MyCustomForm> createState() => _MyCustomFormState();
+}
+
+class _MyCustomFormState extends State<MyCustomForm> {
+  @override
   Widget build(BuildContext context) {
+    List<String> items = ['a', 'B'];
+    // List<String> items = [];
+    var _controller1 = TextEditingController();
+    var _controller2 = TextEditingController();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        const Padding(
+        Padding(
           padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
           child: TextField(
+            controller: _controller1,
             decoration: InputDecoration(
               border: OutlineInputBorder(),
               hintText: 'Enter a search term',
@@ -115,11 +126,32 @@ class MyCustomForm extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
           child: TextFormField(
+            controller: _controller2,
             decoration: const InputDecoration(
               border: UnderlineInputBorder(),
               labelText: 'Enter your username',
             ),
           ),
+        ),
+        ElevatedButton(
+            onPressed: () {
+              var listviewText = _controller1.text + _controller2.text;
+
+              _controller1.clear();
+              _controller2.clear();
+              setState(() {
+                // items.add(listviewText);
+                items[0] = listviewText;
+              });
+              print(listviewText);
+            },
+            child: const Text('Submit')),
+        ListView.builder(
+          shrinkWrap: true,
+          itemCount: items.length,
+          itemBuilder: (context, index) {
+            return ListTile(title: Text(items[index]));
+          },
         ),
       ],
     );
